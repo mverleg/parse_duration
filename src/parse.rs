@@ -1,27 +1,5 @@
-// MIT License
-//
-// Copyright (c) 2017 The parse_duration Developers
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
 use num::pow::pow;
-use num::{BigInt, ToPrimitive};
+use num::{i64, ToPrimitive};
 use regex::Regex;
 use std::error::Error as ErrorTrait;
 use std::fmt;
@@ -30,15 +8,15 @@ use std::time::Duration;
 #[derive(Debug, PartialEq, Eq, Clone)]
 /// An enumeration of the possible errors while parsing.
 pub enum Error {
-    // When I switch exponents to use `BigInt`, this variant should be impossible.
+    // When I switch exponents to use `i64`, this variant should be impossible.
     // Right now it'll return this error with things like "1e123456781234567812345678"
     // where the exponent can't be parsed into an `isize`.
     /// An exponent failed to be parsed as an `isize`.
     ParseInt(String),
     /// An unrecognized unit was found.
     UnknownUnit(String),
-    /// A `BigInt` was too big to be converted into a `u64` or was negative.
-    OutOfBounds(BigInt),
+    /// A `i64` was too big to be converted into a `u64` or was negative.
+    OutOfBounds(i64),
     /// A value without a unit was found.
     NoUnitFound(String),
     /// No value at all was found.
@@ -86,25 +64,25 @@ impl ErrorTrait for Error {
 #[derive(Default)]
 struct ProtoDuration {
     /// The number of nanoseconds in the `ProtoDuration`. May be negative.
-    nanoseconds: BigInt,
+    nanoseconds: i64,
     /// The number of microseconds in the `ProtoDuration`. May be negative.
-    microseconds: BigInt,
+    microseconds: i64,
     /// The number of milliseconds in the `ProtoDuration`. May be negative.
-    milliseconds: BigInt,
+    milliseconds: i64,
     /// The number of seconds in the `ProtoDuration`. May be negative.
-    seconds: BigInt,
+    seconds: i64,
     /// The number of minutes in the `ProtoDuration`. May be negative.
-    minutes: BigInt,
+    minutes: i64,
     /// The number of hours in the `ProtoDuration`. May be negative.
-    hours: BigInt,
+    hours: i64,
     /// The number of days in the `ProtoDuration`. May be negative.
-    days: BigInt,
+    days: i64,
     /// The number of weeks in the `ProtoDuration`. May be negative.
-    weeks: BigInt,
+    weeks: i64,
     /// The number of months in the `ProtoDuration`. May be negative.
-    months: BigInt,
+    months: i64,
     /// The number of years in the `ProtoDuration`. May be negative.
-    years: BigInt,
+    years: i64,
 }
 
 impl ProtoDuration {
@@ -125,8 +103,8 @@ impl ProtoDuration {
         nanoseconds %= 1_000_000_000_u32;
 
         let seconds =
-            <BigInt as ToPrimitive>::to_u64(&seconds).ok_or_else(|| Error::OutOfBounds(seconds))?;
-        let nanoseconds = <BigInt as ToPrimitive>::to_u32(&nanoseconds).ok_or_else(|| {
+            <i64 as ToPrimitive>::to_u64(&seconds).ok_or_else(|| Error::OutOfBounds(seconds))?;
+        let nanoseconds = <i64 as ToPrimitive>::to_u32(&nanoseconds).ok_or_else(|| {
             // This shouldn't happen since nanoseconds is less than 1 billion.
             Error::OutOfBounds(nanoseconds)
         })?;
@@ -221,7 +199,7 @@ pub fn parse(input: &str) -> Result<Duration, Error> {
     if let Some(int) = NUMBER_RE.captures(input) {
         // This means it's just a value
         // Since the regex matched, the first group exists, so we can unwrap.
-        let seconds = BigInt::parse_bytes(int.get(1).unwrap().as_str().as_bytes(), 10)
+        let seconds = i64::parse_bytes(int.get(1).unwrap().as_str().as_bytes(), 10)
             .ok_or_else(|| Error::ParseInt(int.get(1).unwrap().as_str().to_owned()))?;
         Ok(Duration::new(
             seconds
@@ -251,7 +229,7 @@ pub fn parse(input: &str) -> Result<Duration, Error> {
                     ))
                 }
                 (Some(int), None, None, Some(unit)) => {
-                    let int = BigInt::parse_bytes(int.as_str().as_bytes(), 10)
+                    let int = i64::parse_bytes(int.as_str().as_bytes(), 10)
                         .ok_or_else(|| Error::ParseInt(int.as_str().to_owned()))?;
 
                     match parse_unit(unit.as_str()) {
@@ -269,16 +247,16 @@ pub fn parse(input: &str) -> Result<Duration, Error> {
                     }
                 }
                 (Some(int), Some(dec), None, Some(unit)) => {
-                    let int = BigInt::parse_bytes(int.as_str().as_bytes(), 10)
+                    let int = i64::parse_bytes(int.as_str().as_bytes(), 10)
                         .ok_or_else(|| Error::ParseInt(int.as_str().to_owned()))?;
 
                     let exp = dec.as_str().len();
 
-                    let dec = BigInt::parse_bytes(dec.as_str().as_bytes(), 10)
+                    let dec = i64::parse_bytes(dec.as_str().as_bytes(), 10)
                         .ok_or_else(|| Error::ParseInt(dec.as_str().to_owned()))?;
 
                     // boosted_int is value * 10^exp * unit
-                    let mut boosted_int = int * pow(BigInt::from(10), exp) + dec;
+                    let mut boosted_int = int * pow(i64::from(10), exp) + dec;
 
                     // boosted_int is now value * 10^exp * nanoseconds
                     match parse_unit(unit.as_str()) {
@@ -296,11 +274,11 @@ pub fn parse(input: &str) -> Result<Duration, Error> {
                     }
 
                     // boosted_int is now value * nanoseconds (rounding down)
-                    boosted_int /= pow(BigInt::from(10), exp);
+                    boosted_int /= pow(i64::from(10), exp);
                     duration.nanoseconds += boosted_int;
                 }
                 (Some(int), None, Some(exp), Some(unit)) => {
-                    let int = BigInt::parse_bytes(int.as_str().as_bytes(), 10)
+                    let int = i64::parse_bytes(int.as_str().as_bytes(), 10)
                         .ok_or_else(|| Error::ParseInt(int.as_str().to_owned()))?;
 
                     let exp = exp
@@ -330,30 +308,30 @@ pub fn parse(input: &str) -> Result<Duration, Error> {
                     // x.wrapping_abs() as usize will always give the intended result
                     // This is because isize::MIN as usize == abs(isize::MIN) (as a usize)
                     if exp < 0 {
-                        boosted_int /= pow(BigInt::from(10), exp.wrapping_abs() as usize);
+                        boosted_int /= pow(i64::from(10), exp.wrapping_abs() as usize);
                     } else {
-                        boosted_int *= pow(BigInt::from(10), exp.wrapping_abs() as usize);
+                        boosted_int *= pow(i64::from(10), exp.wrapping_abs() as usize);
                     }
                     duration.nanoseconds += boosted_int;
                 }
                 (Some(int), Some(dec), Some(exp), Some(unit)) => {
-                    let int = BigInt::parse_bytes(int.as_str().as_bytes(), 10)
+                    let int = i64::parse_bytes(int.as_str().as_bytes(), 10)
                         .ok_or_else(|| Error::ParseInt(int.as_str().to_owned()))?;
 
                     let dec_exp = dec.as_str().len();
 
                     let exp = exp
                         .as_str()
-                        .parse::<BigInt>()
+                        .parse::<i64>()
                         .or_else(|_| Err(Error::ParseInt(exp.as_str().to_owned())))?
-                        - (BigInt::from(dec_exp));
+                        - (i64::from(dec_exp));
                     let exp = exp.to_isize().ok_or_else(|| Error::OutOfBounds(exp))?;
 
-                    let dec = BigInt::parse_bytes(dec.as_str().as_bytes(), 10)
+                    let dec = i64::parse_bytes(dec.as_str().as_bytes(), 10)
                         .ok_or_else(|| Error::ParseInt(dec.as_str().to_owned()))?;
 
                     // boosted_int is value * 10^-exp * unit
-                    let mut boosted_int = int * pow(BigInt::from(10), dec_exp) + dec;
+                    let mut boosted_int = int * pow(i64::from(10), dec_exp) + dec;
 
                     // boosted_int is now value * 10^-exp * nanoseconds
                     match parse_unit(unit.as_str()) {
@@ -374,9 +352,9 @@ pub fn parse(input: &str) -> Result<Duration, Error> {
                     // x.wrapping_abs() as usize will always give the intended result
                     // This is because isize::MIN as usize == abs(isize::MIN) (as a usize)
                     if exp < 0 {
-                        boosted_int /= pow(BigInt::from(10), exp.wrapping_abs() as usize);
+                        boosted_int /= pow(i64::from(10), exp.wrapping_abs() as usize);
                     } else {
-                        boosted_int *= pow(BigInt::from(10), exp.wrapping_abs() as usize);
+                        boosted_int *= pow(i64::from(10), exp.wrapping_abs() as usize);
                     }
                     duration.nanoseconds += boosted_int;
                 }
