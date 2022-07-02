@@ -1,20 +1,17 @@
 [package]
-name = "parse_duration"
-version = "2.1.1"
-authors = ["zeta12ti <zeta12ti@protonmail.com>"]
-homepage = "https://github.com/zeta12ti/parse_duration/"
-repository = "https://github.com/zeta12ti/parse_duration/"
-documentation = "https://docs.rs/parse_duration"
-description = "Parses a duration from a string."
+name = "parse_duration2"
+version = "2.1.2"
+authors = ["zeta12ti <zeta12ti@protonmail.com>", "Mark <mverleg.noreply@gmail.com>"]
+homepage = "https://github.com/mverleg/parse_duration/"
+repository = "https://github.com/mverleg/parse_duration/"
+documentation = "https://docs.rs/parse_duration2"
+description = "Parses a duration from a string. Fork with security fix."
 readme = "README.md"
 keywords = ["duration", "date", "string", "parse"]
 categories = ["command-line-interface", "parsing"]
 license = "MIT"
 
-[badges]
-travis-ci = { repository = "zeta12ti/parse_duration", branch = "master" }
-
 [dependencies]
-regex = "1"
-lazy_static = "1"
-num = "0.2"
+regex = "1.5.6"
+lazy_static = "1.4.0"
+num = "0.4.0"
