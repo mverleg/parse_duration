@@ -10,8 +10,8 @@ readme = "README.md"
 keywords = ["duration", "date", "string", "parse"]
 categories = ["command-line-interface", "parsing"]
 license = "MIT"
+edition = "2021"
 
 [dependencies]
 regex = "1.5.6"
 lazy_static = "1.4.0"
-num = "0.4.0"

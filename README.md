@@ -1,7 +1,9 @@
 # parse_duration2
 [![Crates.io](https://img.shields.io/crates/v/parse_duration2.svg)](https://crates.io/crates/parse_duration2)
 
-This is a fork of [zeta12ti's `parse_duration`](https://github.com/zeta12ti/parse_duration) that fixes a DOS issue and does a few small updates.
+This is a fork of [zeta12ti's `parse_duration`](https://github.com/zeta12ti/parse_duration).
+
+It fixes a DOS issue and drops support for numbers bigger than ±9.22e18.
 
 ---
 

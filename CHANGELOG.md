@@ -2,7 +2,7 @@
 
 ## 3.0.0 (2022-07-02)
 - Forked from zeta12ti
-- Drop bigint support
+- Drop bigint support, add overflow error variant
 - Fix security issue https://rustsec.org/advisories/RUSTSEC-2021-0041
 - Drop travis CI
 

@@ -1,5 +1,4 @@
 use super::parse;
-use num::BigInt;
 use std::time::Duration;
 
 macro_rules! test_parse {
@@ -153,7 +152,7 @@ fn number_too_big() {
     assert_eq!(
         Ok(parse("123456789012345678901234567890 seconds")),
         "123456789012345678901234567890"
-            .parse::<BigInt>()
+            .parse::<i64>()
             .map(|int| Err(parse::Error::OutOfBounds(int)))
     );
 }
@@ -163,7 +162,7 @@ fn negative_duration() {
     assert_eq!(
         Ok(parse("-3 days 71 hours")),
         "-3600"
-            .parse::<BigInt>()
+            .parse::<i64>()
             .map(|int| Err(parse::Error::OutOfBounds(int)))
     );
 }
