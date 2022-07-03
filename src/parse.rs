@@ -306,9 +306,10 @@ pub fn parse(input: &str) -> Result<Duration, Error> {
                     // x.wrapping_abs() as usize will always give the intended result
                     // This is because isize::MIN as usize == abs(isize::MIN) (as a usize)
                     if exp < 0 {
-                        boosted_int /= 10_i64.pow(exp.wrapping_abs().try_into().map_err(|_| Error::Overflow)?);
+                        boosted_int = boosted_int / 10_i64.pow(exp.wrapping_abs().try_into().map_err(|_| Error::Overflow)?);
                     } else {
-                        boosted_int *= 10_i64.pow(exp.wrapping_abs().try_into().map_err(|_| Error::Overflow)?);
+                        let mul = 10_i64.pow(exp.wrapping_abs().try_into().map_err(|_| Error::Overflow)?);
+                        boosted_int = boosted_int.checked_mul(mul).ok_or_else(|| Error::Overflow)?;
                     }
                     duration.nanoseconds += boosted_int;
                 }
@@ -352,7 +353,8 @@ pub fn parse(input: &str) -> Result<Duration, Error> {
                     if exp < 0 {
                         boosted_int /= 10_i64.pow(exp.wrapping_abs().try_into().map_err(|_| Error::Overflow)?);
                     } else {
-                        boosted_int *= 10_i64.pow(exp.wrapping_abs().try_into().map_err(|_| Error::Overflow)?);
+                        let mul = 10_i64.pow(exp.wrapping_abs().try_into().map_err(|_| Error::Overflow)?);
+                        boosted_int = boosted_int.checked_mul(mul).ok_or_else(|| Error::Overflow)?;
                     }
                     duration.nanoseconds += boosted_int as i64;
                 }
