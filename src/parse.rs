@@ -127,9 +127,9 @@ lazy_static! {
     static ref NUMBER_RE: Regex = Regex::new(
         r"(?x)
         ^
-        [^\w-]*     # any non-word characters, except '-' (for negatives - may add '.' for decimals)
-        (-?\d+)     # a possible negative sign and some positive number of digits
-        [^\w-]*     # more non-word characters
+        [^0-9a-zA-Z_-]*     # any non-word characters, except '-' (for negatives - may add '.' for decimals)
+        (-?\d+)             # a possible negative sign and some positive number of digits
+        [^0-9a-zA-Z_-]*     # more non-word characters
         $"
     )
     .expect("Compiling a regex went wrong");
@@ -146,8 +146,8 @@ lazy_static! {
                                     # section matches at all.
         (?:e(?P<exp>[-+]?\d+))?     # an optional exponent
         (?:
-            [^\w]*                  # some amount of junk (non word characters)
-            (?P<unit>[\w&&[^\d]]+)  # a word with no digits
+            [^0-9a-zA-Z_]*          # some amount of junk (non word characters)
+            (?P<unit>[0-9a-zA-Z_&&[^\d]]+)  # a word with no digits
         )?
         ",
     )

@@ -13,5 +13,5 @@ license = "MIT"
 edition = "2021"
 
 [dependencies]
-regex = "1.5.6"
-lazy_static = "1.4.0"
+regex = { version = "1.5.6", default-features = false, features = ["std", "perf"] }
+lazy_static = { version = "1.4.0", default-features = false }

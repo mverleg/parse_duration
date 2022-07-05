@@ -145,6 +145,7 @@ extern crate lazy_static;
 pub mod parse;
 
 pub use self::parse::parse;
+pub use self::parse::Error;
 
 #[cfg(test)]
 mod tests;
