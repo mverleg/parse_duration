@@ -1,7 +1,7 @@
 # parse_duration0
 
 [![Crates.io](https://img.shields.io/crates/v/parse_duration0.svg)](https://crates.io/crates/parse_duration0)
-[![Documentation](https://docs.rs/lazy_static/badge.svg)](https://docs.rs/lazy_static)
+[![Documentation](https://docs.rs/parse_duration0/badge.svg)](https://docs.rs/lazy_static)
 ![Test & lint](https://github.com/mverleg/parse_duration/actions/workflows/test-lint.yml/badge.svg)
 ![Check dependencies](https://github.com/mverleg/parse_duration/actions/workflows/check-dependencies.yml/badge.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
