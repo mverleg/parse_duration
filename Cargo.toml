@@ -1,10 +1,10 @@
 [package]
-name = "parse_duration2"
+name = "parse_duration0"
 version = "2.1.2"
 authors = ["zeta12ti <zeta12ti@protonmail.com>", "Mark <mverleg.noreply@gmail.com>"]
 homepage = "https://github.com/mverleg/parse_duration/"
 repository = "https://github.com/mverleg/parse_duration/"
-documentation = "https://docs.rs/parse_duration2"
+documentation = "https://docs.rs/parse_duration0"
 description = "Parses a duration from a string. Fork with security fix."
 readme = "README.md"
 keywords = ["duration", "date", "string", "parse"]

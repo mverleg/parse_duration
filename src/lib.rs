@@ -5,7 +5,7 @@
 //! For example, negative numbers, decimals and exponents are allowed.
 //!
 //! ```
-//! use parse_duration2::parse;
+//! use parse_duration0::parse;
 //! use std::time::Duration;
 //!
 //! // One hour less than a day
@@ -42,7 +42,7 @@
 //! If the same unit is specified more than once, the sum of the values is used.
 //!
 //! ```
-//! use parse_duration2::parse;
+//! use parse_duration0::parse;
 //! use std::time::Duration;
 //!
 //! assert_eq!(
@@ -94,7 +94,7 @@
 //!
 //!
 //! ```
-//! use parse_duration2::parse;
+//! use parse_duration0::parse;
 //! use std::time::Duration;
 //!
 //! // Full names may be used
@@ -118,7 +118,7 @@
 //! They will be rounded down to the nearest nanosecond if necessary.
 //!
 //! ```
-//! use parse_duration2::parse;
+//! use parse_duration0::parse;
 //! use std::time::Duration;
 //!
 //! assert_eq!(parse("1 day -1 hour"), Ok(Duration::new(82_800, 0)));
@@ -136,7 +136,7 @@
 //! See [the documentation for the error `enum`](parse/enum.Error.html) for more information.
 //!
 //! ```
-//! use parse_duration2::parse;
+//! use parse_duration0::parse;
 //!
 //! let input = "1e100 seconds";
 //!

@@ -1,5 +1,5 @@
-# parse_duration2
-[![Crates.io](https://img.shields.io/crates/v/parse_duration2.svg)](https://crates.io/crates/parse_duration2)
+# parse_duration0
+[![Crates.io](https://img.shields.io/crates/v/parse_duration0.svg)](https://crates.io/crates/parse_duration0)
 
 This is a fork of [zeta12ti's `parse_duration`](https://github.com/zeta12ti/parse_duration).
 
@@ -16,7 +16,7 @@ For example, negative numbers, decimals and exponents are allowed.
 ```
 extern crate parse_duration;
 
-use parse_duration2::parse;
+use parse_duration0::parse;
 use std::time::Duration;
 
 // One hour less than a day

@@ -1,4 +1,4 @@
-# parse_duration2 (fork)
+# parse_duration0 (fork)
 
 ## 3.0.0 (2022-07-02)
 - Forked from zeta12ti
