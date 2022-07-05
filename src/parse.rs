@@ -1,8 +1,9 @@
-use std::convert::TryInto;
-use regex::Regex;
-use std::error::Error as ErrorTrait;
-use std::fmt;
-use std::time::Duration;
+use ::std::convert::TryInto;
+use ::std::error::Error as ErrorTrait;
+use ::std::fmt;
+use ::std::time::Duration;
+
+use ::regex::Regex;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 /// An enumeration of the possible errors while parsing.
@@ -111,8 +112,12 @@ impl ProtoDuration {
         seconds += &nanoseconds / 1_000_000_000;
         nanoseconds %= 1_000_000_000;
 
-        let seconds: u64 = seconds.try_into().map_err(|_| Error::OutOfBounds(seconds))?;
-        let nanoseconds: u32 = nanoseconds.try_into().map_err(|_| Error::OutOfBounds(nanoseconds))?;
+        let seconds: u64 = seconds
+            .try_into()
+            .map_err(|_| Error::OutOfBounds(seconds))?;
+        let nanoseconds: u32 = nanoseconds
+            .try_into()
+            .map_err(|_| Error::OutOfBounds(nanoseconds))?;
 
         Ok(Duration::new(seconds, nanoseconds))
     }
@@ -205,7 +210,9 @@ pub fn parse(input: &str) -> Result<Duration, Error> {
         // This means it's just a value
         // Since the regex matched, the first group exists, so we can unwrap.
         let txt = int.get(1).unwrap().as_str();
-        let seconds = txt.parse::<i64>().map_err(|_| Error::ParseInt(txt.to_owned()))?;
+        let seconds = txt
+            .parse::<i64>()
+            .map_err(|_| Error::ParseInt(txt.to_owned()))?;
         Ok(Duration::new(
             seconds.try_into().map_err(|_| Error::Overflow)?,
             0,
@@ -214,8 +221,8 @@ pub fn parse(input: &str) -> Result<Duration, Error> {
         // This means we have at least one "unit" (or plain word) and one value.
         let mut duration = ProtoDuration::default();
         for capture in DURATION_RE.captures_iter(input) {
-            if let Some(_) = capture.name("exp") {
-                return Err(Error::ExpNotSupported)
+            if capture.name("exp").is_some() {
+                return Err(Error::ExpNotSupported);
             }
             match (
                 capture.name("int"),
@@ -235,7 +242,9 @@ pub fn parse(input: &str) -> Result<Duration, Error> {
                 }
                 (Some(int), None, Some(unit)) => {
                     let txt = int.as_str();
-                    let int = txt.parse::<i64>().map_err(|_| Error::ParseInt(txt.to_owned()))?;
+                    let int = txt
+                        .parse::<i64>()
+                        .map_err(|_| Error::ParseInt(txt.to_owned()))?;
 
                     match parse_unit(unit.as_str()) {
                         "nanoseconds" => duration.nanoseconds += int,
@@ -253,28 +262,36 @@ pub fn parse(input: &str) -> Result<Duration, Error> {
                 }
                 (Some(int), Some(dec), Some(unit)) => {
                     let txt = int.as_str();
-                    let int = txt.parse::<i64>().map_err(|_| Error::ParseInt(txt.to_owned()))?;
+                    let int = txt
+                        .parse::<i64>()
+                        .map_err(|_| Error::ParseInt(txt.to_owned()))?;
 
-                    let exp: u32 = dec.as_str().len().try_into().expect("number of decimals too large");
+                    let exp: u32 = dec
+                        .as_str()
+                        .len()
+                        .try_into()
+                        .expect("number of decimals too large");
 
                     let txt = dec.as_str();
-                    let dec = txt.parse::<i64>().map_err(|_| Error::ParseInt(txt.to_owned()))?;
+                    let dec = txt
+                        .parse::<i64>()
+                        .map_err(|_| Error::ParseInt(txt.to_owned()))?;
 
                     // boosted_int is value * 10^exp * unit
                     let mut boosted_int = int * 10_i64.pow(exp) + dec;
 
                     // boosted_int is now value * 10^exp * nanoseconds
                     match parse_unit(unit.as_str()) {
-                        "nanoseconds" => boosted_int = boosted_int,
-                        "microseconds" => boosted_int = 1_000_i64 * boosted_int,
-                        "milliseconds" => boosted_int = 1_000_000_i64 * boosted_int,
-                        "seconds" => boosted_int = 1_000_000_000_i64 * boosted_int,
-                        "minutes" => boosted_int = 60_000_000_000_i64 * boosted_int,
-                        "hours" => boosted_int = 3_600_000_000_000_i64 * boosted_int,
-                        "days" => boosted_int = 86_400_000_000_000_i64 * boosted_int,
-                        "weeks" => boosted_int = 604_800_000_000_000_i64 * boosted_int,
-                        "months" => boosted_int = 2_629_746_000_000_000_i64 * boosted_int,
-                        "years" => boosted_int = 31_556_952_000_000_000_i64 * boosted_int,
+                        "nanoseconds" => {}
+                        "microseconds" => boosted_int *= 1_000_i64,
+                        "milliseconds" => boosted_int *= 1_000_000_i64,
+                        "seconds" => boosted_int *= 1_000_000_000_i64,
+                        "minutes" => boosted_int *= 60_000_000_000_i64,
+                        "hours" => boosted_int *= 3_600_000_000_000_i64,
+                        "days" => boosted_int *= 86_400_000_000_000_i64,
+                        "weeks" => boosted_int *= 604_800_000_000_000_i64,
+                        "months" => boosted_int *= 2_629_746_000_000_000_i64,
+                        "years" => boosted_int *= 31_556_952_000_000_000_i64,
                         s => return Err(Error::UnknownUnit(s.to_owned())),
                     }
 

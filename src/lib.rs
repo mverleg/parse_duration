@@ -5,8 +5,8 @@
 //! For example, negative numbers, decimals and exponents are allowed.
 //!
 //! ```
-//! use parse_duration0::parse;
-//! use std::time::Duration;
+//! use ::parse_duration0::parse;
+//! use ::std::time::Duration;
 //!
 //! // One hour less than a day
 //! assert_eq!(parse("1 day -1 hour"), Ok(Duration::new(82_800, 0)));
@@ -42,8 +42,8 @@
 //! If the same unit is specified more than once, the sum of the values is used.
 //!
 //! ```
-//! use parse_duration0::parse;
-//! use std::time::Duration;
+//! use ::parse_duration0::parse;
+//! use ::std::time::Duration;
 //!
 //! assert_eq!(
 //!     parse("15 days 20 seconds 100 milliseconds"),
@@ -94,8 +94,8 @@
 //!
 //!
 //! ```
-//! use parse_duration0::parse;
-//! use std::time::Duration;
+//! use ::parse_duration0::parse;
+//! use ::std::time::Duration;
 //!
 //! // Full names may be used
 //! assert_eq!(parse("10 days 1 nanoseconds 15 years"), Ok(Duration::new(474_218_280, 1)));
@@ -118,8 +118,8 @@
 //! They will be rounded down to the nearest nanosecond if necessary.
 //!
 //! ```
-//! use parse_duration0::parse;
-//! use std::time::Duration;
+//! use ::parse_duration0::parse;
+//! use ::std::time::Duration;
 //!
 //! assert_eq!(parse("1 day -1 hour"), Ok(Duration::new(82_800, 0)));
 //!
@@ -144,7 +144,7 @@ extern crate lazy_static;
 /// See the [module level documentation](index.html) for more.
 pub mod parse;
 
-pub use parse::parse;
+pub use self::parse::parse;
 
 #[cfg(test)]
 mod tests;

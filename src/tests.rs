@@ -1,5 +1,6 @@
+use ::std::time::Duration;
+
 use super::parse;
-use std::time::Duration;
 
 macro_rules! test_parse {
     (fn $fun:ident($string: expr, $seconds: expr, $nanoseconds: expr)) => {
@@ -155,7 +156,9 @@ test_invalid!(fn wrong_order("year15", parse::Error::NoUnitFound("15".to_string(
 fn number_too_big() {
     assert_eq!(
         parse("123456789012345678901234567890 seconds"),
-        Err(parse::Error::ParseInt("123456789012345678901234567890".to_owned()))
+        Err(parse::Error::ParseInt(
+            "123456789012345678901234567890".to_owned()
+        ))
     );
 }
 
