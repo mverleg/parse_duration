@@ -217,15 +217,14 @@ pub fn parse(input: &str) -> Result<Duration, Error> {
         // This means we have at least one "unit" (or plain word) and one value.
         let mut duration = ProtoDuration::default();
         for capture in DURATION_RE.captures_iter(input) {
+            if let Some(_) = capture.name("exp") {
+                return Err(Error::ExpNotSupported)
+            }
             match (
                 capture.name("int"),
                 capture.name("dec"),
-                capture.name("exp"),
                 capture.name("unit"),
             ) {
-                (_, _, Some(_), _) => {
-                    return Err(Error::ExpNotSupported)
-                }
                 // capture.get(0) is *always* the actual match, so unwrapping causes no problems
                 (.., None) => {
                     return Err(Error::NoUnitFound(
