@@ -16,7 +16,11 @@ pub enum Error {
     UnknownUnit(String),
     /// A `i64` was out of range for conversion into a smaller or unsigned type.
     OutOfBounds(i64),
+    /// There was an overflow in the calculation. Usually this happens at 2^63 or 2^64.
     Overflow,
+    /// Unlike zeta12ti's original parse_duration, this fork does
+    /// not support exponential notation in durations.
+    ExpNotSupported,
     /// A value without a unit was found.
     NoUnitFound(String),
     /// No value at all was found.
@@ -46,6 +50,9 @@ impl fmt::Display for Error {
             Error::Overflow => {
                 write!(f, "Value too high or too low (maximum is around ±9.2e18)")
             }
+            Error::ExpNotSupported => {
+                write!(f, "Exponential notation not supported (i.e. not 2.3e4)")
+            }
         }
     }
 }
@@ -59,6 +66,7 @@ impl ErrorTrait for Error {
             Error::NoUnitFound(_) => "A value without a unit was found",
             Error::NoValueFound(_) => "No value was found",
             Error::Overflow => "Value too high or too low",
+            Error::ExpNotSupported => "Exponential notation not supported (i.e. not 2.3e4)",
         }
     }
 }
@@ -134,6 +142,7 @@ lazy_static! {
                                     # if there's no decimal point.
                                     # This means we'll always have the decimal point if this
                                     # section matches at all.
+        (?:e(?P<exp>[-+]?\d+))?     # an optional exponent
         (?:
             [^\w]*                  # some amount of junk (non word characters)
             (?P<unit>[\w&&[^\d]]+)  # a word with no digits
@@ -211,8 +220,12 @@ pub fn parse(input: &str) -> Result<Duration, Error> {
             match (
                 capture.name("int"),
                 capture.name("dec"),
+                capture.name("exp"),
                 capture.name("unit"),
             ) {
+                (_, _, Some(_), _) => {
+                    return Err(Error::ExpNotSupported)
+                }
                 // capture.get(0) is *always* the actual match, so unwrapping causes no problems
                 (.., None) => {
                     return Err(Error::NoUnitFound(
