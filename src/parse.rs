@@ -128,7 +128,7 @@ lazy_static! {
         r"(?x)
         ^
         [^0-9a-zA-Z_-]*     # any non-word characters, except '-' (for negatives - may add '.' for decimals)
-        (-?\d+)             # a possible negative sign and some positive number of digits
+        (-?[0-9]+)             # a possible negative sign and some positive number of digits
         [^0-9a-zA-Z_-]*     # more non-word characters
         $"
     )
@@ -137,17 +137,17 @@ lazy_static! {
 
 lazy_static! {
     static ref DURATION_RE: Regex = Regex::new(
-        r"(?x)(?i)
-        (?P<int>-?\d+)              # the integer part
-        \.?(?:(?P<dec>\d+))?        # an optional decimal part
-                                    # note: the previous part will eat any decimals
-                                    # if there's no decimal point.
-                                    # This means we'll always have the decimal point if this
-                                    # section matches at all.
-        (?:e(?P<exp>[-+]?\d+))?     # an optional exponent
+        r"(?x)
+        (?P<int>[-]?[0-9]+)            # the integer part
+        \.?(?:(?P<dec>[0-9]+))?        # an optional decimal part
+                                       # note: the previous part will eat any decimals
+                                       # if there's no decimal point.
+                                       # This means we'll always have the decimal point if this
+                                       # section matches at all.
+        (?:e(?P<exp>[-+]?[0-9]+))?     # an optional exponent
         (?:
-            [^0-9a-zA-Z_]*          # some amount of junk (non word characters)
-            (?P<unit>[0-9a-zA-Z_&&[^\d]]+)  # a word with no digits
+            [^0-9a-zA-Z_]*             # some amount of junk (non word characters)
+            (?P<unit>[0-9a-zA-Z_&&[^0-9]]+)  # a word with no digits
         )?
         ",
     )
