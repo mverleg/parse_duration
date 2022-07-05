@@ -142,7 +142,11 @@ test_parse!(fn unmatched_negatives("1 day - 15 minutes", 87_300, 0));
 test_parse!(fn no_unit("15", 15, 0));
 test_parse!(fn no_unit_with_noise(".:++++]][][[][15[]][][]:}}}}", 15, 0));
 
-test_invalid!(fn invalid_int("1e11232345982734592837498234 years", parse::Error::ParseInt("11232345982734592837498234".to_string())));
+test_parse!(fn signed_max_value(&format!("{} s", ::std::i64::MAX), ::std::i64::MAX as u64, 0));
+test_invalid!(fn unsigned_max_value(&format!("{} s", ::std::u64::MAX),
+    parse::Error::ParseInt(format!("{}", ::std::u64::MAX))));
+
+test_invalid!(fn invalid_int("1e11232345982734592837498234 years", parse::Error::ExpNotSupported));
 test_invalid!(fn invalid_unit("16 sdfwe", parse::Error::UnknownUnit("sdfwe".to_string())));
 test_invalid!(fn no_value("year", parse::Error::NoValueFound("year".to_string())));
 test_invalid!(fn wrong_order("year15", parse::Error::NoUnitFound("15".to_string())));
@@ -150,10 +154,8 @@ test_invalid!(fn wrong_order("year15", parse::Error::NoUnitFound("15".to_string(
 #[test]
 fn number_too_big() {
     assert_eq!(
-        Ok(parse("123456789012345678901234567890 seconds")),
-        "123456789012345678901234567890"
-            .parse::<i64>()
-            .map(|int| Err(parse::Error::OutOfBounds(int)))
+        parse("123456789012345678901234567890 seconds"),
+        Err(parse::Error::ParseInt("123456789012345678901234567890".to_owned()))
     );
 }
 

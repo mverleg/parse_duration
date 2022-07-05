@@ -11,7 +11,7 @@
 //! // One hour less than a day
 //! assert_eq!(parse("1 day -1 hour"), Ok(Duration::new(82_800, 0)));
 //! // Using exponents
-//! assert_eq!(parse("1.26e-1 days"), Ok(Duration::new(10_886, 400_000_000)));
+//! assert_eq!(parse("0.126 days"), Ok(Duration::new(10_886, 400_000_000)));
 //! // Extra things will be ignored
 //! assert_eq!(
 //!     parse("Duration: 1 hour, 15 minutes and 29 seconds"),
@@ -123,10 +123,10 @@
 //!
 //! assert_eq!(parse("1 day -1 hour"), Ok(Duration::new(82_800, 0)));
 //!
-//! assert_eq!(parse("1.84467e19 seconds"), Ok(Duration::new(18_446_700_000_000_000_000, 0)));
+//! assert_eq!(parse("1844670000000000000 seconds"), Ok(Duration::new(1_844_670_000_000_000_000, 0)));
 //! assert_eq!(
-//!     parse("1.84467e28 nanoseconds"),
-//!     Ok(Duration::new(18_446_700_000_000_000_000, 0))
+//!     parse("18446700000000000 nanoseconds"),
+//!     Ok(Duration::new(18_446_700, 0))
 //! );
 //! ```
 //!
@@ -134,18 +134,6 @@
 //!
 //! The error `enum` has different variants for particular sorts of errors.
 //! See [the documentation for the error `enum`](parse/enum.Error.html) for more information.
-//!
-//! ```
-//! use parse_duration0::parse;
-//!
-//! let input = "1e100 seconds";
-//!
-//! if let Err(parse::Error::OutOfBounds(_)) = parse(input) {
-//!     println!("The input was too big");
-//! } else {
-//!     panic!("The input wasn't too big");
-//! }
-//! ```
 
 extern crate regex;
 #[macro_use]

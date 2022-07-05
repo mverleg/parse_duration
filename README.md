@@ -3,7 +3,11 @@
 
 This is a fork of [zeta12ti's `parse_duration`](https://github.com/zeta12ti/parse_duration).
 
-It fixes a DOS issue and drops support for numbers bigger than ±9.22e18.
+Main differences:
+
+* It fixes a DOS issue.
+* It drops support for numbers bigger than ±9.22e18.
+* It drops support for exponential notation.
 
 ---
 
