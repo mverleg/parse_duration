@@ -20,13 +20,11 @@ For example, negative numbers, decimals and exponents are allowed.
 ```
 extern crate parse_duration;
 
-use parse_duration0::parse;
-use std::time::Duration;
+use ::parse_duration0::parse;
+use ::std::time::Duration;
 
 // One hour less than a day
 assert_eq!(parse("1 day -1 hour"), Ok(Duration::new(82_800, 0)));
-// Using exponents
-assert_eq!(parse("1.26e-1 days"), Ok(Duration::new(10_886, 400_000_000)));
 // Extra things will be ignored
 assert_eq!(
     parse("Duration: 1 hour, 15 minutes and 29 seconds"),

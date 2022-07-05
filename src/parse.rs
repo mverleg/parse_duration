@@ -7,10 +7,7 @@ use std::time::Duration;
 #[derive(Debug, PartialEq, Eq, Clone)]
 /// An enumeration of the possible errors while parsing.
 pub enum Error {
-    // When I switch exponents to use `i64`, this variant should be impossible.
-    // Right now it'll return this error with things like "1e123456781234567812345678"
-    // where the exponent can't be parsed into an `isize`.
-    /// An exponent failed to be parsed as an `isize`.
+    // Failed to parse the number, including too large numbers.
     ParseInt(String),
     /// An unrecognized unit was found.
     UnknownUnit(String),
